@@ -7,7 +7,7 @@
     "url": "https://github.com/pirosikick/hiden-no-tare.react/issues"
   },
   "dependencies": {
-    "es6-promise": "^3.3.1",
+    "es6-promise": "^4.0.2",
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-router": "^2.4.0"
