@@ -1,28 +1,17 @@
 const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
-
-/*
- * We've enabled UglifyJSPlugin for you! This minifies your app
- * in order to load faster and run less javascript.
- *
- * https://github.com/webpack-contrib/uglifyjs-webpack-plugin
- *
- */
-
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
-module.exports = {
+module.exports = (env, { mode }) => ({
+  mode,
   entry: "./src",
-
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist")
   },
-
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
-
   module: {
     rules: [
       {
@@ -32,11 +21,17 @@ module.exports = {
       }
     ]
   },
-
-  plugins: [
-    new HTMLPlugin({
-      template: "./public/index.html"
-    }),
-    new UglifyJSPlugin()
-  ]
-};
+  plugins:
+    mode === "development"
+      ? [
+          new HTMLPlugin({
+            template: "./public/index.html"
+          })
+        ]
+      : [
+          new HTMLPlugin({
+            template: "./public/index.html"
+          }),
+          new UglifyJSPlugin()
+        ]
+});
