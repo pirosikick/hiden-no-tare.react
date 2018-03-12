@@ -1,6 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { createStore } from "redux";
+import { connect, Provider } from "react-redux";
+import {
+  createStore,
+  Dispatch as ReduxDispatch
+  // Reducer as ReduxReducer
+} from "redux";
 import { createAction, getType } from "typesafe-actions";
 import { $call } from "utility-types";
 import App from "./App";
@@ -16,6 +21,9 @@ const actions = {
 const returnsOfActions = Object.values(actions).map($call);
 type Action = typeof returnsOfActions[number];
 
+type Dispatch = ReduxDispatch<Action>;
+// type Reducer = ReduxReducer<IRootState, Action>;
+
 const initialState: IRootState = { count: 0 };
 const reducer = (state = initialState, action: Action) => {
   switch (action.type) {
@@ -28,9 +36,19 @@ const reducer = (state = initialState, action: Action) => {
   }
 };
 const store = createStore(reducer);
-store.dispatch(actions.increment());
-store.dispatch(actions.decrement());
-// tslint:disable-next-line no-console
-console.log(store.getState());
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const mapStateToProps = (state: IRootState) => ({
+  count: state.count
+});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onIncrement: () => dispatch(actions.increment()),
+  onDecrement: () => dispatch(actions.decrement())
+});
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>,
+  document.getElementById("root")
+);
